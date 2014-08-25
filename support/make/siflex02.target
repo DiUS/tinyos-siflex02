@@ -1,0 +1,33 @@
+#-*-Makefile-*- vim:syntax=make
+#
+# siflex02.target
+#
+# The siflex02 target file.
+#
+
+PLATFORM = siflex02
+PROGRAMMER ?= avrdude
+DEFAULT_PROGRAM_AVR = avrispmkii
+
+VOLUMEFILE = volumes-atxm256.xml
+VOLUME_ALLOCATOR = tos-storage-atxm256
+VOLUME_FLAGS =
+
+ifeq ($(PROGRAMMER),avrdude)
+  PROGRAMMER_HFUSE_FLAGS ?= 
+  PROGRAMMER_PART ?= -p x256a3
+endif
+
+ifdef RF212_CHANNEL
+  PFLAGS += -DRF212_DEF_CHANNEL=$(RF212_CHANNEL)
+endif
+
+ifndef BUILD_NUMBER
+	BUILD_NUMBER = $(shell hostname)
+endif
+PFLAGS += -DBUILD_NUMBER_STRING=\"$(BUILD_NUMBER)\"
+
+$(call TOSMake_include_platform,avr)
+
+siflex02: $(BUILD_DEPS)
+	@:

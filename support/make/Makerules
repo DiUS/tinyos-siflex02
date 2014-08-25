@@ -147,8 +147,10 @@ PLATFORMDIR ?= $(TOSDIR)/platforms/$(PLATFORM)
 #  Mark TOSMAKE_PATH with a + so that they're not searched for by TOSMake_find.
 $(foreach incdir,$(addprefix +,$(TOSMAKE_PATH)),$(call TOSMake_accum_dir,$(incdir)))
 
-$(foreach file,$(VALID_EXTRAS),$(if $(filter $(call names,$(file)),$(GOALS)),$(eval include $(file))))
+# Dius modification --- evaluate target options first, then extras, so
+# that targets can set parameters for extras.
 $(foreach file,$(VALID_TARGETS),$(if $(filter $(call names,$(file)),$(GOALS)),$(eval include $(file))))
+$(foreach file,$(VALID_EXTRAS),$(if $(filter $(call names,$(file)),$(GOALS)),$(eval include $(file))))
 
 #  Make default rules for each extra with full argument
 $(foreach goal,$(MAKECMDGOALS),$(if $(filter-out $(TARGETS) help,$(goal)),$(eval $(call TOSMake_extra_targets,$(goal)))))

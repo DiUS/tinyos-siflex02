@@ -1,0 +1,11 @@
+#ifndef _TOSBOOT_PLATFORM_H_
+#define _TOSBOOT_PLATFORM_H_
+
+enum {
+  TOSBOOT_ARGS_ADDR = (EEPROM_SIZE - EEPROM_PAGE_SIZE),
+  TOSBOOT_GESTURE_MAX_COUNT = 0xff, // Don't want/need this functionality
+  TOSBOOT_GOLDEN_IMG_ADDR = 0x0L,
+  TOSBOOT_INT_PAGE_SIZE = SPM_PAGESIZE,
+};
+
+#endif

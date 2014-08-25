@@ -1,6 +1,8 @@
 #-*-Makefile-*- vim:syntax=make
 #$Id: avrispmkii.extra,v 1.1 2008-09-23 15:47:56 sallai Exp $
 
+AVRISPMKII ?= usb
+
 ifeq ($(AVRISPMKII),)
 $(error AVRISPMKII must be defined, try "make $(TARGETS) help")
 endif
@@ -13,9 +15,10 @@ ifeq ($(PROGRAMMER),avrdude)
         BOOTLOADER_IMG := $(shell cygpath -m $(BOOTLOADER_IMG))
       endif
     endif
-    PROGRAMMER_FLAGS = -cavrispmkII -P$(AVRISPMKII) -U hfuse:w:$(AVR_FUSE_H):m $(PROGRAMMER_PART) $(PROGRAMMER_EXTRA_FLAGS) $(PROGRAMMER_EXTRA_FLAGS_AVRISPMKII)
+    PROGRAMMER_HFUSE_FLAGS ?= -U hfuse:w:$(AVR_FUSE_H):m
+    PROGRAMMER_FLAGS = -cavrispmkII -P$(AVRISPMKII) $(PROGRAMMER_HFUSE_FLAGS) $(PROGRAMMER_PART) $(PROGRAMMER_EXTRA_FLAGS) $(PROGRAMMER_EXTRA_FLAGS_AVRISPMKII)
     PROGRAMMER_INSTALL_SREC_FLAGS = -U flash:w:$(INSTALL_SREC):a
-    PROGRAMMER_INSTALL_BOOTLOADER_FLAGS = -V -D -U flash:w:$(BOOTLOADER_IMG):a
+    PROGRAMMER_INSTALL_BOOTLOADER_FLAGS = $(if $(BOOTLOADER_LMA_ZERO), -D -U boot:w:$(BOOTLOADER_IMG):a, -V -D -U flash:w:$(BOOTLOADER_IMG):a)
 endif
 
 ifeq ($(PROGRAMMER),uisp)

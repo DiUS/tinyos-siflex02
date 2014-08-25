@@ -54,5 +54,16 @@ ifeq ($(BOOTLOADER),tosboot)
 		BOOTLOADER_IMG ?= $(TOSBOOT_DIR)/tinynode/main.ihex
    endif
 
+  ifneq ($(filter siflex02 modflex, $(TARGETS)),)
+    CFLAGS += -I$(DELUGE_EXTRA)/siflex02 -I$(DELUGE_EXTRA) -I$(DELUGE_EXTRA)/avr
+    CFLAGS += -I$(TOSDIR)/lib/tosboot/siflex02
+    BOOTLOADER_IMG ?= $(TOSBOOT_DIR)/$(TARGETS)/main.ihex
+    BOOTLOADER_LMA_ZERO = 1
+    ifeq ($(PROGRAMMER),avrdude)
+      # Clear BOOTRST fuse bit to boot from boot-loader section
+      PROGRAMMER_HFUSE_FLAGS = -U fuse2:w:0xbf:m
+    endif
+	BOOTLOADER_FLASHDRIVER = $(TOSBOOT_DIR)/$(TARGETS)/flashdriver.lib
+  endif
 
 endif

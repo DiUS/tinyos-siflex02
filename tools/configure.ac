@@ -152,6 +152,7 @@ AC_OUTPUT(
 	tinyos/misc/tos-write-buildinfo
 	tinyos/misc/tos-write-image
 	tinyos/misc/tos-storage-at45db
+	tinyos/misc/tos-storage-atxm256
 	tinyos/misc/tos-storage-stm25p
 	tinyos/misc/tos-storage-pxa27xp30
 	tinyos/misc/tos-dump.py

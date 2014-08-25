@@ -50,6 +50,8 @@
   #include "extra/mulle/TOSBoot_platform.h"
 #elif defined(PLATFORM_TINYNODE)
   #include "extra/tinynode/TOSBoot_platform.h"
+#elif defined(PLATFORM_SIFLEX02)
+  #include "extra/siflex02/TOSBoot_platform.h"
 #else
   #error "Target platform is not currently supported by Deluge T2"
 #endif

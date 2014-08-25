@@ -14,6 +14,8 @@ define AVR_HELP
    mib510,<dev> : use MIB510/MIB520 serial port programming board at port <dev>
    eprb,<host>	: use EPRB (MIB600) at hostname <host>
    avrisp,<dev> : use AVRISP serial programmer at port <dev>
+   avrispmkii[,<dev>] : use AVRISP mkII USB programmer with device <dev>
+                        (default <dev> is "usb", see "-P" option on avrdude manpage)
 
    The dev or host parameter for the programmer option need not be specified,
    in which case it is expected to be defined as in an environment variable of
@@ -52,7 +54,10 @@ VOLUME_ALLOCATOR ?= tos-storage-at45db
 VOLUME_ALLOCATOR_FLAGS ?=
 
 PFLAGS += -Wall -Wshadow $(NESC_FLAGS)
-PFLAGS += -target=$(PLATFORM) -fnesc-cfile=$(BUILDDIR)/app.c -board=$(SENSORBOARD)
+PFLAGS += -target=$(PLATFORM) -fnesc-cfile=$(BUILDDIR)/app.c
+ifdef SENSORBOARD
+PFLAGS += -board=$(SENSORBOARD)
+endif
 ifdef MSG_SIZE
 PFLAGS += -DTOSH_DATA_LENGTH=$(MSG_SIZE)
 endif
@@ -130,7 +135,7 @@ delsetid: FORCE
 	rm -f $(subst .srec.,.exe.,$(INSTALL_SREC)) $(INSTALL_SREC) 
 
 srec: exe FORCE
-	$(OBJCOPY) --output-target=srec $(MAIN_EXE) $(MAIN_SREC)
+	$(OBJCOPY) $(OBJCOPY_FLAGS) --output-target=srec $(MAIN_EXE) $(MAIN_SREC)
 
 tos_buildinfo: ihex build_buildinfo FORCE
   @:
@@ -139,7 +144,7 @@ tosimage: ihex build_tosimage FORCE
 	@:
 
 ihex: exe FORCE
-	$(OBJCOPY) --output-target=ihex $(MAIN_EXE) $(MAIN_IHEX)
+	$(OBJCOPY) $(OBJCOPY_FLAGS) --output-target=ihex $(MAIN_EXE) $(MAIN_IHEX)
 
 exe: exe0 bytes FORCE
 	@:

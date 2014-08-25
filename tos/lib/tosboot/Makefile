@@ -105,6 +105,27 @@ ifeq ($(MAKECMDGOALS),tinynode)
   POST_BUILD_EXTRA_DEPS += strip_iv 
 endif
 
+# Note: ordering here is important, as we want modflex includes
+# to come before the more generic siflex02 include.
+ifeq ($(MAKECMDGOALS),modflex)
+  CFLAGS += -Imodflex -DPLATFORM_SIFLEX02
+endif
+ifneq ($(filter siflex02 modflex,$(MAKECMDGOALS)),)
+  BOOTSECTION_ADDR = 0x40000
+  CFLAGS += -DTOSBOOT_START=$(BOOTSECTION_ADDR)
+  CFLAGS += -Wl,--section-start=.text=$(BOOTSECTION_ADDR)
+  CFLAGS += -Wl,--section-start=.flashwrite=0x41c00
+  CFLAGS += -Wl,--section-start=.flashread=0x41e00
+  CFLAGS += -Isiflex02 -Iavr -Ilib
+  CFLAGS += -I../net/Deluge
+  OBJCOPY_FLAGS = --change-section-lma .text-$(BOOTSECTION_ADDR) --change-section-lma .bss-$(BOOTSECTION_ADDR) --change-section-lma .flashwrite-$(BOOTSECTION_ADDR) --change-section-lma .flashread-$(BOOTSECTION_ADDR)
+  POST_BUILD_EXTRA_DEPS += flashdriver_lib
+
+flashdriver_lib: FORCE
+	@echo "    generating flash driver lib for application use"
+	$(OBJCOPY) -j .flashread -j .flashwrite $(BUILDDIR)/main.exe --strip-all --keep-symbol=flash_read --keep-symbol=flash_write $(BUILDDIR)/flashdriver.lib 2>/dev/null
+
+endif
 
 
 strip_iv: FORCE

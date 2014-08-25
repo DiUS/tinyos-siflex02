@@ -29,6 +29,7 @@ bin_SCRIPTS = tos-ident-flags \
 	      tos-check-env \
 	      tos-storage-stm25p \
 	      tos-storage-at45db \
+	      tos-storage-atxm256 \
 	      tos-storage-pxa27xp30	\
 	      tos-build-deluge-image \
 	      tos-deluge \
